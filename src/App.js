@@ -7,33 +7,20 @@ import './styles.css';
 function App() {
   const [repositories, setRepositories] = useState([]);
 
-  useEffect(() => {
-    async function loadRepositories() {
-      const response = await api.get('repositories');
-
-      setRepositories(response.data);
-    }
-    loadRepositories();
-  }, []);
-
   async function handleAddRepository() {
-    const response = await api.post('/repositories', {
+    const id = window.crypto.randomUUID();
+
+    setRepositories([...repositories, {
+      id,
       title: `new repo ${Date.now()}`,
       url: 'https://cleitonkiper.com.br',
       techs: ['React', 'React Native', 'Nodejs'],
-    });
-
-    setRepositories([...repositories, response.data]);
+    }]);
   }
 
   async function handleRemoveRepository(id) {
-    const response = await api.delete(`repositories/${id}`);
-
-    if (response.status === 204) {
-      const newRepositories = repositories.filter((repo) => repo.id !== id);
-
-      setRepositories(newRepositories);
-    }
+    const newRepositories = repositories.filter((repo) => repo.id !== id);
+    setRepositories(newRepositories);
   }
 
   return (
